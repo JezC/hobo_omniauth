@@ -1,7 +1,9 @@
 Rails.application.routes.draw do
   @controller = ApplicationController.subclasses.find{|c| c.ancestors.include?(HoboOmniauth::Controller)}
   if @controller
-    match '/auth/:provider/callback' => "#{@controller.controller_name}#omniauth_callback", via: [:get, :post]
-    match '/auth/failure' => "#{@controller.controller_name}#omniauth_callback", via: [:get, :post]
-  end
+    get '/auth/:provider' => "#{@controller.controller_name}#omniauth_callback", :as => "auth_callback"
+    get '/auth/failure' => "#{@controller.controller_name}#omniauth_callback", :as => "auth_failure"
+    post '/auth/:provider' => "#{@controller.controller_name}#omniauth_callback", :as => "auth_callback_post"
+    post '/auth/failure' => "#{@controller.controller_name}#omniauth_callback", :as => "auth_failure_post"
+  end    
 end

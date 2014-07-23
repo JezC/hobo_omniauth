@@ -63,27 +63,32 @@ Create config/initializers/omniauth.rb:
 #### Google
 
 Add:
-    gem 'omniauth-google'
+    gem 'omniauth-google-oauth2'
+	
+Docs for this gem: https://github.com/zquestz/omniauth-google-oauth2
 
 [Register your project with Google's Developer Console](https://developers.google.com/console). 
 
 Create a Project.
 
-Under "APIS AND ATH" (left hand sidebar), you'll want "Credentials", to 'Create a new client key'.
+The (unofficial) Google OmniAuth OAuth2 gem requires Contacts and Google Plus APIs to be enabled, 
+whatever else you're doing.
 
-Google offer three "flows". You'll probably be wanting the Web Application flow.
+Under "APIS AND AUTH" (left hand sidebar), you'll want "Credentials", to 'Create a new client key'.
 
-This is where you can put in the callback URL.
+Google offer three "flows". You'll probably be wanting the "Web Application" flow.
 
-As with the others, you get your Client ID and Secret, and need to pass those to OmniAuth.
+This is where you can put in the callback URL with the path `/auth/google_oauth2`
+
+As with the other providers, you get your Client ID and Secret, and need to pass those to OmniAuth.
 
 Create config/initializers/omniauth.rb:
 
     Rails.application.config.middleware.use OmniAuth::Builder do
-       provider :google, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], :client_options => {...}
+       provider :google_oauth2, ENV['GOOGLE_CLIENT_ID'], ENV['GOOGLE_CLIENT_SECRET']
     end
 
-TODO: document some of the scoping options and access to various APIs. 
+TODO: document scoping options and access to various APIs. 
 
 TODO: Also consider progressive access - upgrading and downgrading scope.
 
@@ -91,7 +96,7 @@ TODO: Also consider progressive access - upgrading and downgrading scope.
 
 Most omniauth providers work similarly to Twitter & Github.  If you use another provider, please help to update this documentation!
 
-### Stategies
+### Strategies
 
 #### UserAuth
 
@@ -101,7 +106,13 @@ To use, you can add to any view:
 
      <login provider="github"/>
 
-When the user clicks on the link, they will be signed in.  If the user does not exist, a new one will automatically be created.
+or
+
+	 <login provider="google-oauth2"/>
+
+etc.
+
+When the user clicks on the link, they will be signed in.  If the user does not exist, a new one will automatically be created. 
 
 You probably also want to add something like this to your application.dryml:
 
