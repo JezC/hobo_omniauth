@@ -8,9 +8,11 @@ It can be installed into a Hobo app by typing:
 
 Then add `include HoboOmniauth::Controller` to app/controllers/users_controller.rb and either `include HoboOmniauth::UserAuth` or `include HoboOmniauth::MultiAuth` to app/models/user.rb.   Use `include HoboOmniauth::UserAuth` if you want to use only a single provider.  Use `include HoboOmniauth::MultiAuth` if you want to use multiple providers and/or allow the user to sign in with a password.  See *Strategies* below for more information on these two options.
 
+Run 'bundle install' to update the accessible gems.
+
 Next create a migration to add the necessary tables & columns:
 
-    rails generate hobo:migration
+    hobo generate migration
 
 You will then need to add at least one provider.
 
@@ -57,6 +59,33 @@ Create config/initializers/omniauth.rb:
     end
 
 (The :client_options specified are for Ubuntu.  Your OS may be different or may not need this option.)
+
+#### Google
+
+Add:
+    gem 'omniauth-google'
+
+[Register your project with Google's Developer Console](https://developers.google.com/console). 
+
+Create a Project.
+
+Under "APIS AND ATH" (left hand sidebar), you'll want "Credentials", to 'Create a new client key'.
+
+Google offer three "flows". You'll probably be wanting the Web Application flow.
+
+This is where you can put in the callback URL.
+
+As with the others, you get your Client ID and Secret, and need to pass those to OmniAuth.
+
+Create config/initializers/omniauth.rb:
+
+    Rails.application.config.middleware.use OmniAuth::Builder do
+       provider :google, ENV['GOOGLE_KEY'], ENV['GOOGLE_SECRET'], :client_options => {...}
+    end
+
+TODO: document some of the scoping options and access to various APIs. 
+
+TODO: Also consider progressive access - upgrading and downgrading scope.
 
 #### Others
 
